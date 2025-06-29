@@ -1,17 +1,14 @@
 import React, { useState } from "react";
-import villa from "../asset/villa.jpg";
-import { loginWeb } from "../services/authService";
+import logoKemenhub from "../asset/LOGO KEMENHUB.png";
 
-function Login() {
+function LoginBoyolali() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     try {
       const response = await fetch(
@@ -30,68 +27,88 @@ function Login() {
         throw new Error(errorData.message || "Login gagal");
       }
 
-      const user = await response.json();
-      console.log("Login berhasil:", user);
-      alert("Login berhasil!");
+      const data = await response.json();
+      console.log("📦 Response dari server:", data);
+
+      const userName = data?.data?.user?.username;
+
+      if (userName) {
+        alert(`✅ Login berhasil!\nSelamat datang, ${userName}`);
+      } else {
+        alert("⚠️ Login berhasil, tapi data user tidak ditemukan.");
+        console.warn("Data login:", data);
+      }
+
+      // Contoh: Simpan token jika perlu
+      // localStorage.setItem("token", data.token);
     } catch (err) {
-      setError(err.message);
+      console.error("Login error:", err);
+      alert(
+        "❌ Login gagal: harap melakukan monitoring ke semua alat terlebih dahulu" +
+          err.message
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 h-screen w-full">
-      <div className="hidden sm:block">
-        <img className="w-full h-full object-cover" src={villa} alt="Villa" />
+    <div className="min-h-screen bg-[#eaeaea] flex flex-col items-center">
+      {/* Header */}
+      <div className="w-full bg-[#001e75] py-2 text-center text-white font-semibold text-lg">
+        LOGIN APLIKASI PENGUJIAN
       </div>
 
-      <div className="flex flex-col justify-center">
+      {/* Form */}
+      <div className="flex-grow flex items-center justify-center w-full">
         <form
           onSubmit={handleLogin}
-          className="max-w-[400px] rounded-lg w-full mx-auto bg-slate-200 p-4"
+          className="bg-[#d2ebfa] border border-blue-500 px-8 py-6 mt-8 rounded shadow-md text-center w-[300px]"
         >
-          <h2 className="text-3xl font-semibold text-center py-6">LATENG.</h2>
+          <img
+            src={logoKemenhub}
+            alt="Logo Kemenhub"
+            className="w-16 mx-auto mb-3"
+          />
+          <h3 className="text-sm font-semibold mb-1 leading-tight">
+            DINAS PERHUBUNGAN
+            <br />
+            KABUPATEN BOYOLALI
+          </h3>
 
-          <div className="flex flex-col py-2">
-            <label>Username</label>
+          <div className="mb-3 text-left">
+            <label className="text-sm">Nama User</label>
             <input
-              className="border p-1 rounded-sm"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              className="w-full border border-gray-400 rounded-sm p-1 text-sm"
               required
             />
           </div>
 
-          <div className="flex flex-col py-2">
-            <label>Password</label>
+          <div className="mb-4 text-left">
+            <label className="text-sm">Password</label>
             <input
-              className="border p-1 rounded-sm"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-gray-400 rounded-sm p-1 text-sm"
               required
             />
           </div>
 
           <button
-            className="border w-full my-2 py-2 bg-blue-600 rounded-xl font-bold hover:bg-blue-400 text-white"
             type="submit"
             disabled={loading}
+            className="bg-gray-300 hover:bg-gray-400 text-sm px-6 py-1 rounded-sm border border-gray-500 shadow w-full"
           >
-            {loading ? "Logging in..." : "Sign In"}
+            {loading ? "Logging in..." : "Login"}
           </button>
-
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-          <div className="justify-items-end text-center pt-2">
-            <p className="text-sm text-gray-700">Create an Account</p>
-          </div>
         </form>
       </div>
     </div>
   );
 }
 
-export default Login;
+export default LoginBoyolali;
