@@ -14,13 +14,16 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/user/login-web", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await fetch(
+        "https://monitoring-kir-production.up.railway.app/user/login-web",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
